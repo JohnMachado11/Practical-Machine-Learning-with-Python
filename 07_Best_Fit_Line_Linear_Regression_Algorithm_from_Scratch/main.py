@@ -33,6 +33,7 @@ m, b = best_fit_slope_and_intercept(xs, ys)
 print("m: ", m)
 print("b: ", b)
 
+# y = mx + b is done here
 regression_line = [(m * x) + b for x in xs]
 print(regression_line)
 
