@@ -23,17 +23,30 @@ df = df[["Adj. Open", "Adj. High", "Adj. Low", "Adj. Close", "Adj. Volume"]]
 df["HL_PCT"] = (df["Adj. High"] - df["Adj. Low"]) / df["Adj. Close"] * 100.0
 df["PCT_CHANGE"] = (df["Adj. Close"] - df["Adj. Open"]) / df["Adj. Open"] * 100.0
 
+#             These directly impact the price
+#          price         x            x             x
 df = df[["Adj. Close", "HL_PCT", "PCT_CHANGE", "Adj. Volume"]]
 forecast_col = "Adj. Close"
 df.fillna(-99999, inplace=True)
-forecast_out = int(math.ceil(0.01 * len(df)))
+
+# 1%
+# forecast_out = int(math.ceil(0.01 * len(df)))
+
+# 10%
+forecast_out = int(math.ceil(0.1 * len(df)))
 df["Label"] = df[forecast_col].shift(-forecast_out)
 
 
 X = np.array(df.drop(["Label"], axis=1))
 X = preprocessing.scale(X)
-X = X[:-forecast_out]
+
+# Have X_Lately come first in variable assignment so it grabs the last 10% of X. 
+# This is so it doesn't grab the last 10% of the X which comes after X_Lately.
+# The X after X_Lately is the first 90% of X. So if I flipped these variables around, 
+# X_Lately would take the last 10% of the 90% of the new X. 
+# The order is important here.
 X_Lately = X[-forecast_out:] # last 35 days
+X = X[:-forecast_out]
 
 df.dropna(inplace=True)
 y = np.array(df["Label"])
@@ -41,15 +54,15 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
 # clf = LinearRegression(n_jobs=1)
 # clf.fit(X_train, y_train)
+# print("Training Model")
 # with open("linear_regression.pickle", "wb") as f:
 #     pickle.dump(clf, f)
 
+# print("Loading new model")
 pickle_in = open("linear_regression.pickle", "rb")
 clf = pickle.load(pickle_in)
 
 accuracy = clf.score(X_test, y_test)
-
-# print(accuracy)
 
 forecast_set = clf.predict(X_Lately)
 print(forecast_set, accuracy, forecast_out)
