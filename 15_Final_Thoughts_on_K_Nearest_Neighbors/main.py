@@ -78,7 +78,6 @@ for i in range(25):
                 correct += 1
             # else:
             #     print(confidence)
-
             total += 1
 
     print("Accuracy: ", correct / total)
