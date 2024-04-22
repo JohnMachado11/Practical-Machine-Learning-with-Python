@@ -10,8 +10,10 @@ style.use("fivethirtyeight")
 
 
 dataset = {
-    "k": [[1, 2], [2, 3], [3, 1]], # features
-    "r": [[6, 5], [7, 7], [8, 6]] # label
+    # Features = elements within the lists
+    # Labels = "k" and "r"
+    "k": [[1, 2], [2, 3], [3, 1]],
+    "r": [[6, 5], [7, 7], [8, 6]]
 }
 
 # new_features = [5, 7]
@@ -65,8 +67,15 @@ def k_nearest_neighbors(data, predict, k=3):
 result = k_nearest_neighbors(dataset, new_features, k=3)
 print("Result: ", result)
 
+#                  Plotting with labels
+# for label in dataset:
+#     class_points = dataset[label]
+#     xs = [point[0] for point in class_points]
+#     ys = [point[1] for point in class_points]
+#     plt.scatter(xs, ys, s=100, label=label.upper())
 
 [[plt.scatter(ii[0], ii[1], s=100, color=i) for ii in dataset[i]] for i in dataset]
-# plt.scatter(new_features[0], new_features[1], color=result, s=100)
-plt.scatter(new_features[0], new_features[1], color="green", s=100)
+plt.scatter(new_features[0], new_features[1], color=result, s=100)
+plt.scatter(new_features[0], new_features[1], color="green", s=100, label="Prediction")
+plt.legend(loc="lower right")
 plt.show()
